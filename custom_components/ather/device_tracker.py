@@ -6,13 +6,14 @@ from .const import DOMAIN, CONF_VIN, CONF_MODEL
 async def async_setup_entry(hass, entry, async_add_entities):
     vin = entry.data[CONF_VIN]
     model = entry.data.get(CONF_MODEL, "EV Scooter")
-    async_add_entities([AtherDeviceTracker(vin, model, entry.entry_id)])
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+    async_add_entities([AtherDeviceTracker(vin, model, coordinator)])
 
 class AtherDeviceTracker(TrackerEntity):
-    def __init__(self, vin, model, entry_id):
+    def __init__(self, vin, model, coordinator):
         self._vin = vin
         self._model = model
-        self._entry_id = entry_id
+        self._coordinator = coordinator
         self._attr_name = f"Ather {model} Location"
         self._attr_unique_id = f"ather_{vin}_location"
         self._latitude = None
@@ -39,10 +40,11 @@ class AtherDeviceTracker(TrackerEntity):
 
     async def async_added_to_hass(self):
         self.async_on_remove(async_dispatcher_connect(self.hass, f"{DOMAIN}_update_{self._vin}", self._handle_update))
+        self._handle_update()
 
     @callback
     def _handle_update(self):
-        cache = self.hass.data[DOMAIN][self._entry_id]["cache"]
+        cache = self._coordinator.data
         if "telemetry.bike" in cache and "gps_location" in cache["telemetry.bike"]:
             gps = cache["telemetry.bike"]["gps_location"]
             if "lat" in gps and "lng" in gps:
