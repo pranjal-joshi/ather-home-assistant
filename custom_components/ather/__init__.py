@@ -9,7 +9,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_send
 from .const import DOMAIN, CONF_ATHER_TOKEN, CONF_SCOOTER_UUID, CONF_VIN, WS_ENDPOINT, HEADERS_BASE
 
 _LOGGER = logging.getLogger(__name__)
-PLATFORMS = ["sensor", "binary_sensor", "device_tracker"]
+PLATFORMS = ["sensor", "binary_sensor", "device_tracker", "button", "number"]
 
 class AtherDataCoordinator:
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry):
@@ -18,7 +18,8 @@ class AtherDataCoordinator:
         self.data = {
             "telemetry.bike": {},
             "telemetry.charging": {},
-            "telemetry.tpms": {}
+            "telemetry.tpms": {},
+            "service": {"last_service_at": None}
         }
         self.last_synced_time = 0
         self.vin = entry.data[CONF_VIN]
