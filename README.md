@@ -155,6 +155,12 @@ Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTIN
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=NoobPratik/ather-home-assistant&type=date&legend=top-left)](https://www.star-history.com/?repos=NoobPratik%2Father-home-assistant&type=date&legend=top-left)
+
+---
+
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
