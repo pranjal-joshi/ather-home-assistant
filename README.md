@@ -1,5 +1,7 @@
 # ⚡ Ather Energy
 
+![Ather Banner](https://inc42.com/wp-content/uploads/2020/01/Untitled-design-2020-01-29T150600.950.jpg)
+
 [![GitHub Release](https://img.shields.io/github/v/release/NoobPratik/ather-home-assistant?style=for-the-badge&logo=github&logoColor=white&label=RELEASE&color=10B981)](https://github.com/NoobPratik/ather-home-assistant/releases)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/NoobPratik/ather-home-assistant/total?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=2341BDF5&label=HACS%20Downloads&color=341BDF5)
 [![License](https://img.shields.io/github/license/NoobPratik/ather-home-assistant?style=for-the-badge&logo=scroll&logoColor=white&label=LICENSE&color=orange)](LICENSE)
