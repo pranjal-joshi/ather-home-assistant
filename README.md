@@ -1,59 +1,170 @@
-# Ather Energy Custom Integration for Home Assistant
+# ⚡ Ather Energy
 
-This is a custom Home Assistant integration that connects directly to your Ather smart scooter over native WebSockets to stream live, real-time data. No need for clumsy MQTT setups, external bridges, or companion scripts.
+![Ather Banner](https://inc42.com/wp-content/uploads/2020/01/Untitled-design-2020-01-29T150600.950.jpg)
 
-## What it tracks
-* **Real-Time Data:** Telemetry updates instantly the second your scooter changes states (e.g., switching from Sleeping to Riding or Charging).
-* **15+ Sensors:** Keeps tabs on your Battery State-of-Charge (SoC), estimated range for different riding modes, odometer, charging types, and system alerts.
-* **Live Mapping:** Provides a `device_tracker` entity so you can see your scooter's live location (latitude, longitude, and accuracy) right on your Home Assistant map cards.
-* **Clean Organization:** Diagnostic info (like software versions and privacy toggles) are automatically hidden away in diagnostic tabs so they don't clutter your main dashboard.
+[![GitHub Release](https://img.shields.io/github/v/release/NoobPratik/ather-home-assistant?style=for-the-badge&logo=github&logoColor=white&label=RELEASE&color=10B981)](https://github.com/NoobPratik/ather-home-assistant/releases)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/NoobPratik/ather-home-assistant/total?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=2341BDF5&label=HACS%20Downloads&color=341BDF5)
+[![License](https://img.shields.io/github/license/NoobPratik/ather-home-assistant?style=for-the-badge&logo=scroll&logoColor=white&label=LICENSE&color=orange)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+
+**Home Assistant integration for Ather Energy smart scooters (450X, Rizta, Apex).**
+
+Connects directly to your Ather scooter over native WebSockets to stream live, real-time data. No MQTT, no external bridges, no companion scripts.
+
+---
+
+## ✨ Features
+
+- ✅ **Live Real-Time Data** — Telemetry updates instantly via WebSocket when your scooter changes state (Sleeping, Riding, Charging, etc.)
+- ✅ **15+ Sensors** — Battery SOC, estimated range (per ride mode), odometer, tyre pressure, charging status, ride mode, and more
+- ✅ **Live Location Tracking** — `device_tracker` entity for real-time GPS position on your map
+- ✅ **Binary Sensors** — Alerts for incognito mode, smart eco, charger connection, and low tyre pressure
+- ✅ **Automatic Reconnection** — WebSocket auto-reconnects on drop; triggers re-auth if token expires
+- ✅ **Simple Setup** — Phone number + OTP, auto-detects VIN and scooter model
+
+---
+
+## Available Sensors
+
+### Numerical Sensors
+
+| Sensor | Unit | Description |
+|--------|------|-------------|
+| Battery Level | % | Current battery state of charge |
+| Estimated Range | km | Predicted range for current riding mode |
+| Odometer | km | Total distance travelled |
+| Vehicle State | | Current state (Sleeping, Riding, Charging, etc.) |
+| Active Ride Mode | | Eco, Ride, Sport, Warp, etc. |
+| Front Tyre Pressure | psi | Front tyre pressure |
+| Rear Tyre Pressure | psi | Rear tyre pressure |
+| Charging Status | | Charging state (Charging, Not Charging, etc.) |
+| Charger Type | | Type of charger connected |
+
+### Binary Sensors
+
+| Sensor | Description |
+|--------|-------------|
+| Incognito Mode | Privacy mode active |
+| Smart Eco Mode | Smart Eco assist active |
+| Charger Connected | Charger physically plugged in |
+| Front Tyre Low Alert | Front tyre pressure below threshold |
+| Rear Tyre Low Alert | Rear tyre pressure below threshold |
+
+### Device Tracker
+
+| Entity | Description |
+|--------|-------------|
+| Ather Location | Real-time GPS coordinates of your scooter |
+
+---
 
 ## 🔒 Privacy & Data Security
-Your data belongs to you. This integration runs entirely locally on your Home Assistant instance. **No data is ever stored, collected, or tracked by any third-party services.** All communication happens strictly and directly between your Home Assistant hardware and the official Ather cloud servers.
 
-## ⚠️ Disclaimer & Current State
-**This is a very early, experimental, and fragile build.** Because this integration relies on reverse-engineered API signatures to communicate with Ather's cloud (including working around Google Firebase gates via the mobile app's signature), **it can break at any time** if Ather changes their backend. 
+Your data belongs to you. This integration runs entirely locally on your Home Assistant instance. **No data is ever stored, collected, or tracked by any third-party services.** All communication happens directly between your Home Assistant and the official Ather cloud servers.
 
-Please use this with that expectation in mind! 
+---
 
-*This project is an independent community development and is not officially affiliated with or endorsed by Ather Energy.*
+## ⚠️ Disclaimer
 
-## 🛵 Supported Models & Call for Testers!
-Right now, this integration has **only been tested on the Ather 450X**, as that is the only vehicle I own. 
+This integration is **not affiliated with, endorsed by, or sponsored by Ather Energy.** It uses reverse-engineered API signatures and can break at any time if Ather changes their backend.
 
-While Ather uses a unified mobile app backend, I am currently unsure if other models—like the **Ather Rizta, 450 Apex, or older generations of the 450/450X**—send the exact same telemetry data layout. 
+*This is an independent community project.*
 
-If you own a Rizta, Apex, or an older 450 model and want to help make this integration work flawlessly for everyone:
-1. Try installing it and see what works or breaks.
-2. Open an Issue with your vehicle model and any logs or data anomalies you notice.
-3. Sharing your anonymized data layouts/payloads will help me expand and fix the script for all models!
+---
 
-## 🤝 Contributions & Feedback Welcome!
-Since this is an early build, things will break, and there is plenty of room for improvement. If you find a bug, have a feature suggestion, or want to help improve the code:
-* Please feel free to **open an Issue** or submit a **Pull Request (PR)**. 
-* All feedback, suggestions, and code improvements are incredibly welcome!
+## 🚀 Installation
 
-## Installation Instructions
+### Option 1: HACS (Recommended)
 
-### Method 1: HACS Custom Repository (Recommended)
-Since this integration isn't in the official HACS default store yet, you can easily add it manually:
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=NoobPratik&repository=ather-home-assistant&category=integration)
 
-1. Make sure you have **HACS** installed and working.
-2. Open **HACS** ➔ Go to the **Integrations** tab.
-3. Click the **three dots menu** in the top right corner and click **Custom Repositories**.
-4. Paste this repository URL: `https://github.com/NoobPratik/ather-home-assistant`
-5. Select **Integration** as the Category and click **Add**.
-6. Click **Download** on the Ather Energy card that pops up.
-7. **Restart** Home Assistant.
+Since this integration isn't in the default HACS store yet, add it as a custom repository:
 
-### Method 2: Manual Installation
-1. Download the latest source code ZIP from this repository.
-2. Extract it and copy the `ather` folder (found inside `custom_components/`) into your Home Assistant server's `/config/custom_components/` directory.
-3. **Restart** Home Assistant.
+1. Open **HACS** → **Integrations**
+2. Click the **three dots menu** (top right) → **Custom Repositories**
+3. Paste: `https://github.com/NoobPratik/ather-home-assistant`
+4. Select **Integration** as the Category → **Add**
+5. Click **Download** on the Ather Energy card
+6. **Restart** Home Assistant
 
-## Initial Configuration
-1. In Home Assistant, go to **Settings** ➔ **Devices & Services** ➔ **Add Integration**.
-2. Search for and select **Ather Energy**.
-3. Type in your registered Ather account **Phone Number** and hit Submit.
-4. You will receive an automated SMS **OTP** (One-Time Password) on your phone. Enter it into the next box and click Submit.
-5. The integration will automatically find your scooter's VIN and spin up all your dashboard entities instantly!
+### Option 2: Manual
+
+1. [Download the latest release](https://github.com/NoobPratik/ather-home-assistant/releases)
+2. Extract the `ather` folder from `custom_components/` into your `config/custom_components/`
+3. **Restart** Home Assistant
+
+---
+
+## ⚙️ Setup
+
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ather)
+
+1. Go to **Settings** → **Devices & Services** → **Add Integration**
+2. Search for and select **Ather Energy**
+3. Enter your registered Ather account **phone number**
+4. Enter the **OTP** sent to your phone
+5. The integration automatically detects your VIN and scooter model
+6. Sensors and device tracker appear instantly on your dashboard
+
+---
+
+## 🛵 Supported Models
+
+| Model | Status |
+|-------|--------|
+| Ather 450X | ✅ Tested |
+| Ather Rizta | ⚠️ Untested — likely works |
+| Ather 450 Apex | ⚠️ Untested — likely works |
+| Ather 450 (Gen 1/2) | ⚠️ Untested — unknown |
+
+If you own a different model, please [open an issue](https://github.com/NoobPratik/ather-home-assistant/issues) with logs and data payloads to help expand compatibility!
+
+---
+
+## Requirements
+
+- Home Assistant 2024.10.0 or higher
+- Python 3.12+
+- Ather Energy smart scooter with active Ather account
+- Registered mobile number with Ather
+
+---
+
+## Data Flow
+
+```
+Ather Cloud (WebSocket) ← → Home Assistant
+        ↓
+  AtherDataCoordinator (in-memory cache)
+        ↓
+  Sensors / Binary Sensors / Device Tracker
+        ↓
+  Dispatcher updates all entities in real-time
+```
+
+Data is pushed from Ather's cloud via WebSocket the instant your scooter changes state — no polling required.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) first.
+
+- [Report a Bug](https://github.com/NoobPratik/ather-home-assistant/issues/new?template=bug_report.md)
+- [Request a Feature](https://github.com/NoobPratik/ather-home-assistant/issues/new?template=feature_request.md)
+
+---
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=NoobPratik/ather-home-assistant&type=date&legend=top-left)](https://www.star-history.com/?repos=NoobPratik%2Father-home-assistant&type=date&legend=top-left)
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+*If you find this integration useful, please consider giving it a star on GitHub!*
