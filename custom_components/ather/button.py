@@ -35,4 +35,5 @@ class AtherServiceButton(ButtonEntity):
             return
 
         self._coordinator.data.setdefault("service", {})["last_service_at"] = round(float(odo), 1)
+        await self._coordinator.async_persist_last_service()
         async_dispatcher_send(self.hass, self._coordinator.signal_name)

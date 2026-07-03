@@ -5,6 +5,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
+from homeassistant.helpers.storage import Store
 
 from .const import DOMAIN, CONF_ATHER_TOKEN, CONF_SCOOTER_UUID, CONF_VIN, WS_ENDPOINT, HEADERS_BASE
 
@@ -24,6 +25,16 @@ class AtherDataCoordinator:
         self.last_synced_time = 0
         self.vin = entry.data[CONF_VIN]
         self.signal_name = f"{DOMAIN}_update_{self.vin}"
+        self._store = Store(hass, 1, f"{DOMAIN}_last_service_{self.vin}")
+
+    async def async_restore_last_service(self):
+        stored = await self._store.async_load()
+        if stored and isinstance(stored, dict) and "last_service_at" in stored:
+            self.data["service"]["last_service_at"] = stored["last_service_at"]
+
+    async def async_persist_last_service(self):
+        val = self.data.get("service", {}).get("last_service_at")
+        await self._store.async_save({"last_service_at": val})
 
     def update_data(self, delta_data):
         bike_data = delta_data.get("telemetry.bike", {})
@@ -50,6 +61,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
     coordinator = AtherDataCoordinator(hass, entry)
     hass.data[DOMAIN][entry.entry_id] = coordinator
+
+    await coordinator.async_restore_last_service()
     
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     

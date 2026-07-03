@@ -1,6 +1,5 @@
 from homeassistant.components.number import NumberEntity
 from homeassistant.helpers.dispatcher import async_dispatcher_send, async_dispatcher_connect
-from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.core import callback
 from .const import DOMAIN, CONF_VIN, CONF_MODEL
 
@@ -10,7 +9,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities([AtherLastServiceNumber(vin, model, coordinator)])
 
-class AtherLastServiceNumber(RestoreEntity, NumberEntity):
+class AtherLastServiceNumber(NumberEntity):
     def __init__(self, vin, model, coordinator):
         self._vin = vin
         self._model = model
@@ -38,12 +37,6 @@ class AtherLastServiceNumber(RestoreEntity, NumberEntity):
         }
 
     async def async_added_to_hass(self):
-        last_state = await self.async_get_last_state()
-        if last_state is not None and last_state.state not in (None, "unknown", "unavailable"):
-            try:
-                self._coordinator.data.setdefault("service", {})["last_service_at"] = float(last_state.state)
-            except (ValueError, TypeError):
-                pass
         self.async_on_remove(async_dispatcher_connect(
             self.hass, self._coordinator.signal_name, self._handle_update
         ))
@@ -54,4 +47,5 @@ class AtherLastServiceNumber(RestoreEntity, NumberEntity):
 
     async def async_set_native_value(self, value):
         self._coordinator.data.setdefault("service", {})["last_service_at"] = float(value)
+        await self._coordinator.async_persist_last_service()
         async_dispatcher_send(self.hass, self._coordinator.signal_name)
